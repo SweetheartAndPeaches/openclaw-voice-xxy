@@ -1,0 +1,325 @@
+.task-manager {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: #f9fafb;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+}
+
+.task-manager-title {
+  text-align: center;
+  color: #1f2937;
+  margin-bottom: 20px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+/* 筛选器 */
+.task-manager-filters {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  padding: 10px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+.task-manager-filter-label {
+  font-size: 14px;
+  color: #374151;
+  font-weight: 500;
+}
+
+.task-manager-filter-select {
+  padding: 6px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  background-color: white;
+  cursor: pointer;
+}
+
+/* 批量操作 */
+.task-manager-batch-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 10px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+.task-manager-select-all {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #374151;
+}
+
+.task-manager-select-all input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.task-manager-batch-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.task-manager-batch-button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.task-manager-batch-delete {
+  background-color: #ef4444;
+  color: white;
+}
+
+.task-manager-batch-delete:hover:not(:disabled) {
+  background-color: #dc2626;
+}
+
+.task-manager-batch-delete:disabled {
+  background-color: #f87171;
+  cursor: not-allowed;
+}
+
+.task-manager-batch-clear {
+  background-color: #f97316;
+  color: white;
+}
+
+.task-manager-batch-clear:hover:not(:disabled) {
+  background-color: #ea580c;
+}
+
+.task-manager-batch-clear:disabled {
+  background-color: #fb923c;
+  cursor: not-allowed;
+}
+
+/* 加载状态 */
+.task-manager-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 40px 0;
+  color: #6b7280;
+}
+
+.task-manager-loading-spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #e5e7eb;
+  border-top: 2px solid #4f46e5;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* 错误状态 */
+.task-manager-error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 40px 0;
+  color: #b91c1c;
+  background-color: #fee2e2;
+  border-radius: 8px;
+  margin: 20px 0;
+}
+
+.task-manager-retry-button {
+  padding: 6px 12px;
+  background-color: #dc2626;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+.task-manager-retry-button:hover {
+  background-color: #b91c1c;
+}
+
+/* 任务列表 */
+.task-manager-list {
+  margin-top: 20px;
+}
+
+.task-manager-empty {
+  text-align: center;
+  padding: 40px 0;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+/* 任务项 */
+.task-manager-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  margin-bottom: 10px;
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  transition: box-shadow 0.2s;
+}
+
+.task-manager-item:hover {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.task-manager-item-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  flex: 1;
+}
+
+.task-manager-item-checkbox {
+  margin-top: 4px;
+}
+
+.task-manager-item-checkbox input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.task-manager-item-info {
+  flex: 1;
+}
+
+.task-manager-item-text {
+  font-size: 14px;
+  color: #1f2937;
+  line-height: 1.5;
+  margin-bottom: 8px;
+}
+
+.task-manager-item-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.task-manager-item-status {
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-weight: 500;
+}
+
+.task-status-pending {
+  background-color: #fbbf24;
+  color: #78350f;
+}
+
+.task-status-processing {
+  background-color: #3b82f6;
+  color: #ffffff;
+}
+
+.task-status-completed {
+  background-color: #10b981;
+  color: #ffffff;
+}
+
+.task-status-failed {
+  background-color: #ef4444;
+  color: #ffffff;
+}
+
+.task-manager-item-time {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+/* 操作按钮 */
+.task-manager-item-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.task-manager-item-action {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  transition: all 0.2s;
+  background-color: #f3f4f6;
+  border: 1px solid #d1d5db;
+}
+
+.task-manager-item-action:hover {
+  background-color: #e5e7eb;
+}
+
+.task-manager-item-play:disabled {
+  background-color: #f9fafb;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.task-manager-item-delete:hover {
+  background-color: #fee2e2;
+  color: #b91c1c;
+}
+
+/* 自动刷新提示 */
+.task-manager-auto-refresh {
+  text-align: center;
+  margin-top: 20px;
+  color: #6b7280;
+  font-size: 12px;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .task-manager {
+    padding: 15px;
+  }
+  
+  .task-manager-batch-actions {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .task-manager-item {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .task-manager-item-actions {
+    align-self: flex-end;
+  }
+}
