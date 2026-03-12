@@ -1,0 +1,26 @@
+{
+  "name": "podcast-website-frontend",
+  "version": "1.0.0",
+  "description": "AI Voice Synthesis Platform - Frontend",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.8.0",
+    "howler": "^2.2.3",
+    "zustand": "^4.3.2"
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.27",
+    "@types/react-dom": "^18.0.10",
+    "@types/howler": "^2.2.7",
+    "typescript": "^4.9.5",
+    "vite": "^4.1.0",
+    "@vitejs/plugin-react": "^3.1.0"
+  }
+}
