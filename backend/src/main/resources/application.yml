@@ -53,6 +53,15 @@ rate-limit:
   requests-per-minute: 60
   burst: 10
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+
 logging:
   level:
     com.podcast: DEBUG
