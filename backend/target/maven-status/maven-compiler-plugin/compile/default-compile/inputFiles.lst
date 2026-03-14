@@ -1,0 +1,6 @@
+/workspace/projects/podcast-website/backend/src/main/java/com/podcast/voice/service/AiVoiceService.java
+/workspace/projects/podcast-website/backend/src/main/java/com/podcast/voice/service/VoiceTaskService.java
+/workspace/projects/podcast-website/backend/src/main/java/com/podcast/voice/controller/VoiceTaskController.java
+/workspace/projects/podcast-website/backend/src/main/java/com/podcast/voice/VoiceApplication.java
+/workspace/projects/podcast-website/backend/src/main/java/com/podcast/voice/entity/VoiceTaskEntity.java
+/workspace/projects/podcast-website/backend/src/main/java/com/podcast/voice/repository/VoiceTaskRepository.java

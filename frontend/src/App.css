@@ -1,0 +1,42 @@
+.App {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+}
+
+/* Mobile responsive design */
+@media (max-width: 768px) {
+  .App {
+    padding: 0;
+  }
+  
+  .container {
+    padding: 1rem;
+  }
+}
+
+/* PWA specific styles */
+.pwa-install-prompt {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #333;
+  color: white;
+  padding: 1rem;
+  text-align: center;
+  z-index: 1000;
+}
+
+.pwa-install-prompt button {
+  background: #4CAF50;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  margin-left: 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.pwa-install-prompt button:hover {
+  background: #45a049;
+}

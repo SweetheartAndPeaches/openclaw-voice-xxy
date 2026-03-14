@@ -1,0 +1,68 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+
+spring:
+  application:
+    name: podcast-voice-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/podcast_db
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  redis:
+    host: localhost
+    port: 6379
+    timeout: 2000ms
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://your-auth-server.com
+
+# AI Service Configuration
+ai:
+  coze:
+    api-key: ${COZE_API_KEY}
+    base-url: https://api.coze.com
+  voice-gen:
+    endpoint: ${VOICE_GEN_ENDPOINT:https://api.coze.com/voice/generate}
+
+# Payment Configuration  
+payment:
+  stripe:
+    secret-key: ${STRIPE_SECRET_KEY}
+    publishable-key: ${STRIPE_PUBLISHABLE_KEY}
+
+# File Storage
+storage:
+  upload-dir: ${UPLOAD_DIR:/tmp/uploads}
+  max-file-size: 10MB
+
+# Rate Limiting
+rate-limit:
+  requests-per-minute: 60
+  burst: 10
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+
+logging:
+  level:
+    com.podcast: DEBUG
+    org.springframework: INFO

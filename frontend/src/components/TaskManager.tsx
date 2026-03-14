@@ -22,6 +22,7 @@ const TaskManager: React.FC<TaskManagerProps> = ({ userId, onTaskSelect }) => {
   const [selectedTasks, setSelectedTasks] = useState<string[]>([]);
   const [statusFilter, setStatusFilter] = useState<'all' | 'pending' | 'processing' | 'completed' | 'failed'>('all');
   const [isDeleting, setIsDeleting] = useState(false);
+  const [showFilters, setShowFilters] = useState(false); // Mobile filter toggle
   
   // 初始化：获取任务并开始轮询
   useEffect(() => {
@@ -179,13 +180,26 @@ const TaskManager: React.FC<TaskManagerProps> = ({ userId, onTaskSelect }) => {
       minute: '2-digit'
     });
   };
+
+  // Toggle mobile filters
+  const toggleFilters = () => {
+    setShowFilters(!showFilters);
+  };
   
   return (
     <div className="task-manager">
       <h3 className="task-manager-title">任务管理</h3>
       
-      {/* 状态筛选 */}
-      <div className="task-manager-filters">
+      {/* Mobile filter toggle button */}
+      <button 
+        className="task-manager-mobile-filter-toggle"
+        onClick={toggleFilters}
+      >
+        筛选 ▼
+      </button>
+      
+      {/* Status filters - hidden on mobile by default */}
+      <div className={`task-manager-filters ${showFilters ? 'task-manager-filters-visible' : ''}`}>
         <label htmlFor="status-filter" className="task-manager-filter-label">
           状态筛选:
         </label>
@@ -203,7 +217,7 @@ const TaskManager: React.FC<TaskManagerProps> = ({ userId, onTaskSelect }) => {
         </select>
       </div>
       
-      {/* 批量操作 */}
+      {/* Batch actions */}
       {filteredTasks.length > 0 && (
         <div className="task-manager-batch-actions">
           <label className="task-manager-select-all">
@@ -235,7 +249,7 @@ const TaskManager: React.FC<TaskManagerProps> = ({ userId, onTaskSelect }) => {
         </div>
       )}
       
-      {/* 加载状态 */}
+      {/* Loading state */}
       {loading && (
         <div className="task-manager-loading">
           <div className="task-manager-loading-spinner"></div>
@@ -243,7 +257,7 @@ const TaskManager: React.FC<TaskManagerProps> = ({ userId, onTaskSelect }) => {
         </div>
       )}
       
-      {/* 错误状态 */}
+      {/* Error state */}
       {error && (
         <div className="task-manager-error">
           <span>❌ {error}</span>
@@ -256,7 +270,7 @@ const TaskManager: React.FC<TaskManagerProps> = ({ userId, onTaskSelect }) => {
         </div>
       )}
       
-      {/* 任务列表 */}
+      {/* Task list */}
       {!loading && !error && (
         <div className="task-manager-list">
           {filteredTasks.length === 0 ? (
@@ -316,7 +330,7 @@ const TaskManager: React.FC<TaskManagerProps> = ({ userId, onTaskSelect }) => {
         </div>
       )}
       
-      {/* 自动刷新提示 */}
+      {/* Auto-refresh indicator */}
       <div className="task-manager-auto-refresh">
         🔁 自动刷新: 每 5 秒
       </div>

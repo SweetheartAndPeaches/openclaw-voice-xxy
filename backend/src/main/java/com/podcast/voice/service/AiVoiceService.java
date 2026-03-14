@@ -1,6 +1,9 @@
 package com.podcast.voice.service;
 
+import com.podcast.voice.entity.UsageEntity;
+import com.podcast.voice.entity.VoiceCloneEntity;
 import com.podcast.voice.entity.VoiceTaskEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -15,6 +18,7 @@ import java.util.UUID;
 /**
  * AI 语音生成服务
  * 集成 Coze Voice Gen API 实现真实的语音生成功能
+ * 支持标准音色和自定义克隆音色
  */
 @Service
 public class AiVoiceService {
@@ -25,7 +29,16 @@ public class AiVoiceService {
     @Value("${coze.base-url:https://api.coze.com}")
     private String cozeBaseUrl;
     
+    @Value("${ai.voice-gen.endpoint:https://api.coze.com/voice/generate}")
+    private String voiceGenEndpoint;
+    
     private final RestTemplate restTemplate;
+    
+    @Autowired
+    private UsageService usageService;
+    
+    @Autowired
+    private VoiceCloneService voiceCloneService;
     
     public AiVoiceService(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
@@ -38,9 +51,21 @@ public class AiVoiceService {
      * @param voiceId 音色ID
      * @param language 语言
      * @param speed 语速 (0.5-2.0)
+     * @param userId 用户ID（用于用量统计）
      * @return 生成的音频文件URL
      */
-    public String generateVoice(String text, String voiceId, String language, Double speed) {
+    public String generateVoice(String text, String voiceId, String language, Double speed, String userId) {
+        // 检查是否是自定义克隆音色
+        VoiceCloneEntity clone = voiceCloneService.findByCloneId(voiceId);
+        if (clone != null) {
+            // 验证用户是否有权限使用此克隆音色
+            if (!clone.getUserId().equals(userId)) {
+                throw new RuntimeException("无权使用此克隆音色");
+            }
+            // 使用克隆音色的原始音色ID
+            voiceId = clone.getOriginalVoiceId();
+        }
+        
         // 构建请求头
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -58,7 +83,7 @@ public class AiVoiceService {
         try {
             // 调用 Coze API
             ResponseEntity<Map> response = restTemplate.exchange(
-                cozeBaseUrl + "/voice/generate",
+                voiceGenEndpoint,
                 HttpMethod.POST,
                 requestEntity,
                 Map.class
@@ -67,14 +92,23 @@ public class AiVoiceService {
             if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
                 // 从响应中提取音频URL
                 Map<String, Object> responseBody = response.getBody();
+                String audioUrl = null;
+                
                 if (responseBody.containsKey("audio_url")) {
-                    return (String) responseBody.get("audio_url");
+                    audioUrl = (String) responseBody.get("audio_url");
                 } else if (responseBody.containsKey("data")) {
                     // 处理嵌套的data结构
                     Map data = (Map) responseBody.get("data");
                     if (data != null && data.containsKey("audio_url")) {
-                        return (String) data.get("audio_url");
+                        audioUrl = (String) data.get("audio_url");
                     }
+                }
+                
+                if (audioUrl != null) {
+                    // 记录用量
+                    Long duration = calculateDuration(text);
+                    usageService.recordUsage(userId, "voice_generation", duration.intValue());
+                    return audioUrl;
                 }
             }
             
@@ -101,7 +135,8 @@ public class AiVoiceService {
                 task.getText(),
                 task.getVoiceId(),
                 "zh-CN", // 默认中文，可根据需求扩展
-                1.0      // 默认语速，可根据需求扩展
+                1.0,     // 默认语速，可根据需求扩展
+                task.getUserId()
             );
             
             // 更新任务状态为 completed

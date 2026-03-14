@@ -25,16 +25,19 @@ public class VoiceTaskController {
      */
     @PostMapping("/tasks")
     public ResponseEntity<VoiceTaskEntity> createTask(@RequestBody Map<String, String> request) {
-        String userId = request.get("userId");
         String text = request.get("text");
         String voiceId = request.get("voiceId");
         
-        if (userId == null || text == null || voiceId == null) {
+        if (text == null || voiceId == null) {
             return ResponseEntity.badRequest().build();
         }
         
-        VoiceTaskEntity task = voiceTaskService.createTask(userId, text, voiceId);
-        return ResponseEntity.ok(task);
+        try {
+            VoiceTaskEntity task = voiceTaskService.createTask(text, voiceId);
+            return ResponseEntity.ok(task);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(null);
+        }
     }
     
     /**
@@ -43,20 +46,28 @@ public class VoiceTaskController {
      */
     @GetMapping("/tasks/{taskId}")
     public ResponseEntity<VoiceTaskEntity> getTask(@PathVariable String taskId) {
-        VoiceTaskEntity task = voiceTaskService.getTaskById(taskId);
-        if (task == null) {
-            return ResponseEntity.notFound().build();
+        try {
+            VoiceTaskEntity task = voiceTaskService.getTaskById(taskId);
+            if (task == null) {
+                return ResponseEntity.notFound().build();
+            }
+            return ResponseEntity.ok(task);
+        } catch (Exception e) {
+            return ResponseEntity.status(403).build();
         }
-        return ResponseEntity.ok(task);
     }
     
     /**
-     * 获取用户任务列表
-     * GET /api/voice/tasks?userId={userId}
+     * 获取当前用户任务列表
+     * GET /api/voice/tasks
      */
     @GetMapping("/tasks")
-    public ResponseEntity<List<VoiceTaskEntity>> getUserTasks(@RequestParam String userId) {
-        List<VoiceTaskEntity> tasks = voiceTaskService.getTasksByUserId(userId);
-        return ResponseEntity.ok(tasks);
+    public ResponseEntity<List<VoiceTaskEntity>> getCurrentUserTasks() {
+        try {
+            List<VoiceTaskEntity> tasks = voiceTaskService.getCurrentUserTasks();
+            return ResponseEntity.ok(tasks);
+        } catch (Exception e) {
+            return ResponseEntity.status(403).build();
+        }
     }
 }

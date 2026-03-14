@@ -1,0 +1,6 @@
+com/podcast/voice/repository/VoiceTaskRepository.class
+com/podcast/voice/controller/VoiceTaskController.class
+com/podcast/voice/VoiceApplication.class
+com/podcast/voice/service/AiVoiceService.class
+com/podcast/voice/service/VoiceTaskService.class
+com/podcast/voice/entity/VoiceTaskEntity.class

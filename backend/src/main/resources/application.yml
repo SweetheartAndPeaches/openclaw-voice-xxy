@@ -29,6 +29,11 @@ spring:
         jwt:
           issuer-uri: https://your-auth-server.com
 
+# JWT Configuration
+jwt:
+  secret: ${JWT_SECRET:my-secret-key-change-in-production}
+  expiration: ${JWT_EXPIRATION:86400} # 24 hours in seconds
+
 # AI Service Configuration
 ai:
   coze:
@@ -36,6 +41,9 @@ ai:
     base-url: https://api.coze.com
   voice-gen:
     endpoint: ${VOICE_GEN_ENDPOINT:https://api.coze.com/voice/generate}
+  voice-clone:
+    endpoint: ${VOICE_CLONE_ENDPOINT:https://api.coze.com/voice/clone}
+    max-audio-size: ${MAX_AUDIO_SIZE:10485760} # 10MB in bytes
 
 # Payment Configuration  
 payment:

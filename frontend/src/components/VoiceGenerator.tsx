@@ -1,12 +1,15 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Howl } from 'howler';
 import './VoiceGenerator.css';
+import { useMobile } from '../hooks/useMobile';
 
 interface VoiceGeneratorProps {
   onTaskCreated?: (taskId: string) => void;
 }
 
 const VoiceGenerator: React.FC<VoiceGeneratorProps> = ({ onTaskCreated }) => {
+  const isMobile = useMobile();
+  
   // 文本输入状态
   const [text, setText] = useState<string>('');
   const [wordCount, setWordCount] = useState<number>(0);
@@ -214,7 +217,7 @@ const VoiceGenerator: React.FC<VoiceGeneratorProps> = ({ onTaskCreated }) => {
     ctx.beginPath();
     
     const currentTimeRatio = howlRef.current.seek() / duration;
-    const barCount = 50;
+    const barCount = isMobile ? 20 : 50; // 移动端减少波形条数
     const barWidth = width / barCount;
     
     for (let i = 0; i < barCount; i++) {
@@ -229,7 +232,7 @@ const VoiceGenerator: React.FC<VoiceGeneratorProps> = ({ onTaskCreated }) => {
         ctx.fillStyle = isPlaying ? '#4f46e5' : '#9ca3af';
       }
       
-      ctx.fillRect(x, y, barWidth - 2, barHeight);
+      ctx.fillRect(x, y, barWidth - (isMobile ? 1 : 2), barHeight);
     }
     
     // 更新当前时间
@@ -287,7 +290,7 @@ const VoiceGenerator: React.FC<VoiceGeneratorProps> = ({ onTaskCreated }) => {
           value={text}
           onChange={(e) => setText(e.target.value)}
           placeholder="请输入要转换为语音的文本..."
-          rows={6}
+          rows={isMobile ? 4 : 6}
           disabled={taskStatus === 'processing'}
         />
         <div className="voice-generator-hint">
@@ -315,41 +318,88 @@ const VoiceGenerator: React.FC<VoiceGeneratorProps> = ({ onTaskCreated }) => {
           </select>
         </div>
         
-        <div className="voice-generator-setting-group">
-          <label htmlFor="language-select" className="voice-generator-label">
-            语言
-          </label>
-          <select
-            id="language-select"
-            className="voice-generator-select"
-            value={language}
-            onChange={(e) => setLanguage(e.target.value)}
-            disabled={taskStatus === 'processing'}
-          >
-            <option value="zh-CN">中文 (简体)</option>
-            <option value="en-US">English (US)</option>
-            <option value="ja-JP">日本語</option>
-            <option value="ko-KR">한국어</option>
-          </select>
-        </div>
-        
-        <div className="voice-generator-setting-group">
-          <label htmlFor="speed-slider" className="voice-generator-label">
-            语速: {speed.toFixed(1)}x
-          </label>
-          <input
-            id="speed-slider"
-            type="range"
-            min="0.5"
-            max="2.0"
-            step="0.1"
-            value={speed}
-            onChange={(e) => setSpeed(parseFloat(e.target.value))}
-            className="voice-generator-slider"
-            disabled={taskStatus === 'processing'}
-          />
-        </div>
+        {!isMobile && (
+          <>
+            <div className="voice-generator-setting-group">
+              <label htmlFor="language-select" className="voice-generator-label">
+                语言
+              </label>
+              <select
+                id="language-select"
+                className="voice-generator-select"
+                value={language}
+                onChange={(e) => setLanguage(e.target.value)}
+                disabled={taskStatus === 'processing'}
+              >
+                <option value="zh-CN">中文 (简体)</option>
+                <option value="en-US">English (US)</option>
+                <option value="ja-JP">日本語</option>
+                <option value="ko-KR">한국어</option>
+              </select>
+            </div>
+            
+            <div className="voice-generator-setting-group">
+              <label htmlFor="speed-slider" className="voice-generator-label">
+                语速: {speed.toFixed(1)}x
+              </label>
+              <input
+                id="speed-slider"
+                type="range"
+                min="0.5"
+                max="2.0"
+                step="0.1"
+                value={speed}
+                onChange={(e) => setSpeed(parseFloat(e.target.value))}
+                className="voice-generator-slider"
+                disabled={taskStatus === 'processing'}
+              />
+            </div>
+          </>
+        )}
       </div>
+      
+      {/* 移动端折叠面板 */}
+      {isMobile && (
+        <details className="voice-generator-mobile-details">
+          <summary className="voice-generator-mobile-summary">高级设置</summary>
+          <div className="voice-generator-mobile-content">
+            <div className="voice-generator-setting-group">
+              <label htmlFor="language-select-mobile" className="voice-generator-label">
+                语言
+              </label>
+              <select
+                id="language-select-mobile"
+                className="voice-generator-select"
+                value={language}
+                onChange={(e) => setLanguage(e.target.value)}
+                disabled={taskStatus === 'processing'}
+              >
+                <option value="zh-CN">中文 (简体)</option>
+                <option value="en-US">English (US)</option>
+                <option value="ja-JP">日本語</option>
+                <option value="ko-KR">한국어</option>
+              </select>
+            </div>
+            
+            <div className="voice-generator-setting-group">
+              <label htmlFor="speed-slider-mobile" className="voice-generator-label">
+                语速: {speed.toFixed(1)}x
+              </label>
+              <input
+                id="speed-slider-mobile"
+                type="range"
+                min="0.5"
+                max="2.0"
+                step="0.1"
+                value={speed}
+                onChange={(e) => setSpeed(parseFloat(e.target.value))}
+                className="voice-generator-slider"
+                disabled={taskStatus === 'processing'}
+              />
+            </div>
+          </div>
+        </details>
+      )}
       
       {/* 控制按钮 */}
       <div className="voice-generator-controls">
@@ -387,8 +437,8 @@ const VoiceGenerator: React.FC<VoiceGeneratorProps> = ({ onTaskCreated }) => {
             <canvas
               ref={audioRef}
               className="voice-generator-waveform"
-              width="600"
-              height="80"
+              width={isMobile ? 300 : 600}
+              height={isMobile ? 60 : 80}
             />
           </div>
           

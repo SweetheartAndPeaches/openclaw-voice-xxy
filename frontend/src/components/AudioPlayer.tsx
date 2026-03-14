@@ -292,7 +292,20 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
       howlRef.current = howl;
     }
   };
-  
+
+  // Mobile touch handling
+  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (!progressRef.current || !howlRef.current || hasError) return;
+    
+    const rect = progressRef.current.getBoundingClientRect();
+    const touchX = e.touches[0].clientX - rect.left;
+    const progress = Math.max(0, Math.min(1, touchX / rect.width));
+    const seekTime = progress * duration;
+    
+    howlRef.current.seek(seekTime);
+    setCurrentTime(seekTime);
+  };
+
   return (
     <div className="audio-player">
       <h3 className="audio-player-title">{title}</h3>
@@ -327,7 +340,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
             <canvas
               ref={waveformCanvasRef}
               className="audio-player-waveform"
-              width="600"
+              width="100%"
               height="80"
             />
           </div>
@@ -337,6 +350,8 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
             className="audio-player-progress-container"
             ref={progressRef}
             onClick={handleProgressClick}
+            onTouchStart={handleProgressClick}
+            onTouchMove={handleTouchMove}
           >
             <div 
               className="audio-player-progress-bar"
@@ -405,7 +420,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
             </div>
           </div>
           
-          {/* 快捷键提示 */}
+          {/* 快捷键提示 - 隐藏在移动设备上 */}
           <div className="audio-player-shortcuts">
             <span>空格: 播放/暂停</span>
             <span>←→: 快退/快进</span>
