@@ -28,6 +28,12 @@ public class UserEntity {
     @Column(nullable = false)
     private String role;
     
+    @Column(name = "stripe_customer_id", unique = true)
+    private String customerId;
+    
+    @Column(name = "subscription_status")
+    private String subscriptionStatus;
+    
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
     
@@ -91,6 +97,22 @@ public class UserEntity {
     
     public void setRole(String role) {
         this.role = role;
+    }
+    
+    public String getCustomerId() {
+        return customerId;
+    }
+    
+    public void setCustomerId(String customerId) {
+        this.customerId = customerId;
+    }
+    
+    public String getSubscriptionStatus() {
+        return subscriptionStatus;
+    }
+    
+    public void setSubscriptionStatus(String subscriptionStatus) {
+        this.subscriptionStatus = subscriptionStatus;
     }
     
     public LocalDateTime getCreatedAt() {

@@ -6,6 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * 用户认证控制器
  * 处理用户注册、登录、JWT Token 验证等认证相关操作
@@ -100,6 +103,51 @@ public class AuthController {
             return ResponseEntity.status(401).body("Invalid token or user not found");
         } catch (Exception e) {
             return ResponseEntity.status(401).body("Failed to get user info: " + e.getMessage());
+        }
+    }
+
+    /**
+     * 获取当前会话信息
+     * 验证用户的认证状态并返回会话详情
+     * @param token JWT Token（可选，未提供时返回未认证状态）
+     * @return 会话信息
+     */
+    @GetMapping("/session")
+    public ResponseEntity<?> getSession(@RequestHeader(value = "Authorization", required = false) String token) {
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            if (token != null && token.startsWith("Bearer ")) {
+                String jwtToken = token.substring(7);
+
+                if (userService.validateToken(jwtToken)) {
+                    String email = userService.getEmailFromToken(jwtToken);
+                    UserEntity user = userService.findByEmail(email);
+
+                    if (user != null && user.getActive()) {
+                        response.put("authenticated", true);
+                        response.put("user", user);
+                        response.put("expiresAt", System.currentTimeMillis() + 86400000L); // 24小时后过期
+                        response.put("message", "Session is valid");
+                        return ResponseEntity.ok(response);
+                    } else if (user != null && !user.getActive()) {
+                        response.put("authenticated", false);
+                        response.put("error", "User account is inactive");
+                        return ResponseEntity.status(403).body(response);
+                    }
+                }
+            }
+
+            // 未提供 Token 或 Token 无效
+            response.put("authenticated", false);
+            response.put("user", null);
+            response.put("message", "No valid session found");
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            response.put("authenticated", false);
+            response.put("error", "Session validation failed: " + e.getMessage());
+            return ResponseEntity.status(500).body(response);
         }
     }
 }

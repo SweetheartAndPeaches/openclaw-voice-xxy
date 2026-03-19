@@ -28,6 +28,13 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     Optional<UserEntity> findByEmail(String email);
     
     /**
+     * 根据Stripe客户ID查找用户
+     * @param customerId Stripe客户ID
+     * @return 用户实体（如果存在）
+     */
+    Optional<UserEntity> findByCustomerId(String customerId);
+    
+    /**
      * 检查用户名是否已存在
      * @param username 用户名
      * @return 是否存在

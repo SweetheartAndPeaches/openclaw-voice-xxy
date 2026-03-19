@@ -22,24 +22,24 @@ public interface VoiceCloneRepository extends JpaRepository<VoiceCloneEntity, Lo
     List<VoiceCloneEntity> findByUserId(String userId);
     
     /**
-     * 根据模型ID和用户ID查找语音克隆模型
-     * @param modelId 模型ID
+     * 根据音色ID和用户ID查找语音克隆模型
+     * @param voiceId 音色ID
      * @param userId 用户ID
      * @return 语音克隆模型（如果存在）
      */
-    Optional<VoiceCloneEntity> findByModelIdAndUserId(String modelId, String userId);
+    Optional<VoiceCloneEntity> findByVoiceIdAndUserId(String voiceId, String userId);
     
     /**
-     * 根据模型ID查找语音克隆模型
-     * @param modelId 模型ID
+     * 根据音色ID查找语音克隆模型
+     * @param voiceId 音色ID
      * @return 语音克隆模型（如果存在）
      */
-    Optional<VoiceCloneEntity> findByModelId(String modelId);
+    Optional<VoiceCloneEntity> findByVoiceId(String voiceId);
     
     /**
-     * 检查模型ID是否已存在
-     * @param modelId 模型ID
+     * 检查音色ID是否已存在
+     * @param voiceId 音色ID
      * @return 是否存在
      */
-    boolean existsByModelId(String modelId);
+    boolean existsByVoiceId(String voiceId);
 }

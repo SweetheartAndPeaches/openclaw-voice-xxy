@@ -18,17 +18,23 @@ public class VoiceCloneEntity {
     @Column(nullable = false)
     private String userId;
     
-    @Column(nullable = false)
+    @Column
     private String voiceId;
     
     @Column(nullable = false)
     private String voiceName;
     
+    @Column
+    private String description;
+    
     @Column(nullable = false)
-    private String audioSampleUrl;
+    private String audioFilePath;
     
     @Column(nullable = false)
     private String status;
+    
+    @Column
+    private String error;
     
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -42,10 +48,10 @@ public class VoiceCloneEntity {
     // Constructors
     public VoiceCloneEntity() {}
     
-    public VoiceCloneEntity(String userId, String voiceName, String audioSampleUrl) {
+    public VoiceCloneEntity(String userId, String voiceName, String audioFilePath) {
         this.userId = userId;
         this.voiceName = voiceName;
-        this.audioSampleUrl = audioSampleUrl;
+        this.audioFilePath = audioFilePath;
         this.status = "pending";
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
@@ -84,12 +90,20 @@ public class VoiceCloneEntity {
         this.voiceName = voiceName;
     }
     
-    public String getAudioSampleUrl() {
-        return audioSampleUrl;
+    public String getDescription() {
+        return description;
     }
     
-    public void setAudioSampleUrl(String audioSampleUrl) {
-        this.audioSampleUrl = audioSampleUrl;
+    public void setDescription(String description) {
+        this.description = description;
+    }
+    
+    public String getAudioFilePath() {
+        return audioFilePath;
+    }
+    
+    public void setAudioFilePath(String audioFilePath) {
+        this.audioFilePath = audioFilePath;
     }
     
     public String getStatus() {
@@ -98,6 +112,14 @@ public class VoiceCloneEntity {
     
     public void setStatus(String status) {
         this.status = status;
+    }
+    
+    public String getError() {
+        return error;
+    }
+    
+    public void setError(String error) {
+        this.error = error;
     }
     
     public LocalDateTime getCreatedAt() {

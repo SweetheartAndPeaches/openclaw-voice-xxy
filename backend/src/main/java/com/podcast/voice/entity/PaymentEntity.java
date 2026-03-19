@@ -1,6 +1,7 @@
 package com.podcast.voice.entity;
 
 import jakarta.persistence.*;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
@@ -17,13 +18,13 @@ public class PaymentEntity {
     private Long id;
     
     @Column(nullable = false)
-    private String userId;
+    private Long userId;
     
     @Column(nullable = false)
     private String paymentMethodId;
     
-    @Column(nullable = false)
-    private String amount;
+    @Column(nullable = false, precision = 19, scale = 4)
+    private BigDecimal amount;
     
     @Column(nullable = false)
     private String currency;
@@ -43,7 +44,7 @@ public class PaymentEntity {
     // Constructors
     public PaymentEntity() {}
     
-    public PaymentEntity(String userId, String paymentMethodId, String amount, String currency, String status, String stripePaymentIntentId) {
+    public PaymentEntity(Long userId, String paymentMethodId, BigDecimal amount, String currency, String status, String stripePaymentIntentId) {
         this.userId = userId;
         this.paymentMethodId = paymentMethodId;
         this.amount = amount;
@@ -63,11 +64,11 @@ public class PaymentEntity {
         this.id = id;
     }
     
-    public String getUserId() {
+    public Long getUserId() {
         return userId;
     }
     
-    public void setUserId(String userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
     
@@ -79,11 +80,11 @@ public class PaymentEntity {
         this.paymentMethodId = paymentMethodId;
     }
     
-    public String getAmount() {
+    public BigDecimal getAmount() {
         return amount;
     }
     
-    public void setAmount(String amount) {
+    public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
     

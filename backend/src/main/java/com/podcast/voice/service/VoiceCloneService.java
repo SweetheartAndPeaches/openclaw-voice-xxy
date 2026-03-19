@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -65,8 +66,8 @@ public class VoiceCloneService {
             voiceClone.setDescription(description);
             voiceClone.setAudioFilePath(fileName);
             voiceClone.setStatus("pending");
-            voiceClone.setCreatedAt(new Date());
-            voiceClone.setUpdatedAt(new Date());
+            voiceClone.setCreatedAt(LocalDateTime.now());
+            voiceClone.setUpdatedAt(LocalDateTime.now());
             
             // 保存到数据库
             VoiceCloneEntity savedVoiceClone = voiceCloneRepository.save(voiceClone);
@@ -113,7 +114,7 @@ public class VoiceCloneService {
         try {
             // 更新状态为 processing
             voiceClone.setStatus("processing");
-            voiceClone.setUpdatedAt(new Date());
+            voiceClone.setUpdatedAt(LocalDateTime.now());
             voiceCloneRepository.save(voiceClone);
             
             // 调用 Coze API 进行音色克隆
@@ -122,14 +123,14 @@ public class VoiceCloneService {
             // 更新状态为 completed
             voiceClone.setStatus("completed");
             voiceClone.setVoiceId(voiceId);
-            voiceClone.setUpdatedAt(new Date());
+            voiceClone.setUpdatedAt(LocalDateTime.now());
             voiceCloneRepository.save(voiceClone);
             
         } catch (Exception e) {
             // 更新状态为 failed
             voiceClone.setStatus("failed");
             voiceClone.setError(e.getMessage());
-            voiceClone.setUpdatedAt(new Date());
+            voiceClone.setUpdatedAt(LocalDateTime.now());
             voiceCloneRepository.save(voiceClone);
         }
     }
@@ -203,15 +204,44 @@ public class VoiceCloneService {
      * 根据音色ID获取音色克隆信息
      */
     public VoiceCloneEntity getVoiceCloneByVoiceId(String voiceId) {
-        return voiceCloneRepository.findByVoiceId(voiceId);
+        Optional<VoiceCloneEntity> optional = voiceCloneRepository.findByVoiceId(voiceId);
+        return optional.orElse(null);
+    }
+    
+    /**
+     * 根据用户ID和音色ID获取音色克隆信息（安全检查）
+     */
+    public VoiceCloneEntity getVoiceClone(String userId, String voiceId) {
+        Optional<VoiceCloneEntity> optional = voiceCloneRepository.findByVoiceIdAndUserId(voiceId, userId);
+        return optional.orElse(null);
+    }
+    
+    /**
+     * 更新音色克隆信息
+     */
+    public VoiceCloneEntity updateVoiceClone(String userId, String voiceId, String voiceName, String description) {
+        VoiceCloneEntity voiceClone = getVoiceClone(userId, voiceId);
+        if (voiceClone == null) {
+            return null;
+        }
+        
+        if (voiceName != null && !voiceName.trim().isEmpty()) {
+            voiceClone.setVoiceName(voiceName);
+        }
+        if (description != null) {
+            voiceClone.setDescription(description);
+        }
+        voiceClone.setUpdatedAt(LocalDateTime.now());
+        
+        return voiceCloneRepository.save(voiceClone);
     }
     
     /**
      * 删除音色克隆
      */
-    public boolean deleteVoiceClone(Long voiceCloneId, String userId) {
-        VoiceCloneEntity voiceClone = voiceCloneRepository.findById(voiceCloneId).orElse(null);
-        if (voiceClone == null || !voiceClone.getUserId().equals(userId)) {
+    public boolean deleteVoiceClone(String userId, String voiceId) {
+        VoiceCloneEntity voiceClone = getVoiceClone(userId, voiceId);
+        if (voiceClone == null) {
             return false;
         }
         
@@ -227,7 +257,7 @@ public class VoiceCloneService {
         }
         
         // 删除数据库记录
-        voiceCloneRepository.deleteById(voiceCloneId);
+        voiceCloneRepository.delete(voiceClone);
         return true;
     }
     

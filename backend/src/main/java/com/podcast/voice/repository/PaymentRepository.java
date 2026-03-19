@@ -14,6 +14,11 @@ import java.util.Optional;
 public interface PaymentRepository extends JpaRepository<PaymentEntity, Long> {
     
     /**
+     * 根据用户ID查找支付记录，按创建时间降序排列
+     */
+    List<PaymentEntity> findByUserIdOrderByCreatedAtDesc(Long userId);
+    
+    /**
      * 根据用户ID查找支付记录
      */
     List<PaymentEntity> findByUserId(Long userId);

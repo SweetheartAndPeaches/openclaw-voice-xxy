@@ -1,8 +1,10 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import VoiceGenerator from './components/VoiceGenerator';
+import VoiceCloner from './components/VoiceCloner';
 import TaskManager from './components/TaskManager';
 import MobileNavigation from './components/MobileNavigation';
+import PWAInstallPrompt from './components/PWAInstallPrompt';
 import { useMobile } from './hooks/useMobile';
 import './App.css';
 import './components/Mobile.css';
@@ -41,6 +43,7 @@ const AppContent: React.FC = () => {
       <Routes>
         <Route path="/" element={<VoiceGenerator />} />
         <Route path="/tasks" element={<TaskManager userId="demo-user" />} />
+        <Route path="/voices" element={<VoiceCloner />} />
       </Routes>
       {isMobile && <MobileNavigation />}
     </>

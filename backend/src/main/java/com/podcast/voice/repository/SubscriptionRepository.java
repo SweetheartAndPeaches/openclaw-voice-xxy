@@ -34,4 +34,13 @@ public interface SubscriptionRepository extends JpaRepository<SubscriptionEntity
      * @return 订阅实体（如果存在）
      */
     Optional<SubscriptionEntity> findByStripeSubscriptionId(String stripeSubscriptionId);
+    
+    /**
+     * 查找用户的当前活跃订阅
+     * @param userId 用户ID
+     * @return 活跃订阅（如果存在）
+     */
+    default Optional<SubscriptionEntity> findActiveByUserId(Long userId) {
+        return findByUserIdAndStatus(userId, "active");
+    }
 }
