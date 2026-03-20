@@ -1,6 +1,6 @@
 # Multi-stage build for podcast-website backend
 # Stage 1: Build stage
-FROM maven:3.8.6-openjdk-8 AS builder
+FROM maven:3.8.6-openjdk-17 AS builder
 
 # Set working directory
 WORKDIR /app
@@ -16,7 +16,10 @@ COPY src ./src
 RUN mvn clean package -DskipTests
 
 # Stage 2: Runtime stage
-FROM openjdk:8-jre-alpine
+FROM openjdk:17-jre-slim
+
+# Install wget for health checks
+RUN apk add --no-cache wget
 
 # Create non-root user
 RUN addgroup -g 1001 -S appuser && \
